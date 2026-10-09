@@ -1,0 +1,294 @@
+@import "tailwindcss";
+
+/* ============================================================
+   AEGIS — design system
+   Precision instrument aesthetic: near-black substrate, hairline
+   rules, tabular numerics, one spectral ramp encoding the 7 layers.
+   ============================================================ */
+
+@theme {
+  /* substrate */
+  --color-void: #05060700;
+  --color-ink: #07080a;
+  --color-ink-2: #0b0d10;
+  --color-ink-3: #111419;
+  --color-ink-4: #171b21;
+
+  /* hairlines */
+  --color-rule: #1e232b;
+  --color-rule-2: #2a313b;
+  --color-rule-3: #3a434f;
+
+  /* type */
+  --color-fg: #e9ecef;
+  --color-fg-2: #a8b0ba;
+  --color-fg-3: #6d757f;
+  --color-fg-4: #464d56;
+
+  /* signal */
+  --color-amber: #ff9d2e;
+  --color-mint: #3ddc97;
+  --color-rose: #ff4d5e;
+  --color-cyan: #4cc9f0;
+  --color-violet: #b48cff;
+  --color-lime: #c6f24e;
+
+  /* spectral layer ramp (7 layers, hue sweep) */
+  --color-L1: #38bdf8; /* specification  */
+  --color-L2: #818cf8; /* training      */
+  --color-L3: #c084fc; /* interpretability */
+  --color-L4: #fb923c; /* containment   */
+  --color-L5: #facc15; /* verification  */
+  --color-L6: #4ade80; /* governance    */
+  --color-L7: #fb7185; /* recovery      */
+
+  --font-display: var(--font-instrument), ui-serif, Georgia, serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+}
+
+:root {
+  color-scheme: dark;
+  --shell-pad: clamp(1.25rem, 4vw, 4.5rem);
+  --rail-w: 15rem;
+}
+
+* {
+  border-color: var(--color-rule);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ---- substrate texture: fine engineering grid + vignette ---- */
+.substrate {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.substrate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.021) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.021) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 0%, transparent 78%);
+}
+
+.substrate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(255, 157, 46, 0.055), transparent 62%),
+    radial-gradient(ellipse 60% 45% at 88% 8%, rgba(76, 201, 240, 0.035), transparent 60%);
+}
+
+/* ---- typography primitives ---- */
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.022em;
+  line-height: 0.95;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-fg-3);
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.02em;
+}
+
+.prose p {
+  color: var(--color-fg-2);
+  line-height: 1.65;
+  font-size: 0.9375rem;
+}
+
+.prose a {
+  color: var(--color-fg);
+  text-decoration: underline;
+  text-decoration-color: var(--color-rule-3);
+  text-underline-offset: 3px;
+}
+
+/* ---- hairline frame ---- */
+.frame {
+  border: 1px solid var(--color-rule);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.014), transparent 40%);
+}
+
+.frame-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+/* ---- corner ticks: instrument-panel detail ---- */
+.ticked {
+  position: relative;
+}
+
+.ticked::before,
+.ticked::after {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-color: var(--color-rule-3);
+  border-style: solid;
+  pointer-events: none;
+}
+
+.ticked::before {
+  top: -1px;
+  left: -1px;
+  border-width: 1px 0 0 1px;
+}
+
+.ticked::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 1px 1px 0;
+}
+
+/* ---- bars ---- */
+.bar-track {
+  position: relative;
+  height: 3px;
+  width: 100%;
+  background: var(--color-rule);
+  overflow: visible;
+}
+
+.bar-fill {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  transition: width 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* CI wedge drawn over the bar */
+.bar-ci {
+  position: absolute;
+  inset-block: -2px;
+  background: rgba(255, 255, 255, 0.13);
+  border-inline: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+/* ---- focus ---- */
+:focus-visible {
+  outline: 1px solid var(--color-amber);
+  outline-offset: 2px;
+}
+
+/* ---- scrollbar ---- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ink);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-rule-2);
+  border: 3px solid var(--color-ink);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-rule-3);
+}
+
+/* ---- reveal ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- marquee scanline for hero ---- */
+@keyframes scan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(1400%);
+  }
+}
+
+.scanline {
+  animation: scan 9s linear infinite;
+}
+
+/* ---- hazard stripe ---- */
+.hazard {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-amber) 0 5px,
+    transparent 5px 10px
+  );
+}
+
+/* ---- katex theming ---- */
+.katex {
+  color: inherit !important;
+  font-size: 1.02em;
+}
+
+.katex-display {
+  margin: 0 !important;
+  padding: 1.15rem 0.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.katex-display > .katex {
+  white-space: nowrap;
+}
