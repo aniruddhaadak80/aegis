@@ -8,7 +8,7 @@
 59 techniques, seven layers of defence, and a live probabilistic risk
 assessment engine adapted from nuclear and aerospace practice.
 
-[![Live Demo](https://img.shields.io/badge/%E2%96%B6%20Live%20Demo-aegis--nmiwep6hc--aniruddha--adaks--projects.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://aegis-nmiwep6hc-aniruddha-adaks-projects.vercel.app)
+[![Live Demo](https://img.shields.io/badge/%E2%96%B6%20Live%20Demo-aegis--aniruddha--adaks--projects.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://aegis-aniruddha-adaks-projects.vercel.app)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](tsconfig.json)
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white)](next.config.ts)
 [![Bun](https://img.shields.io/badge/Bun-1.3-000000?style=for-the-badge&logo=bun&logoColor=white)](package.json)
@@ -632,6 +632,8 @@ never lowers it* — are asserted rather than assumed.
 
 ## Deployment
 
+**Live:** <https://aegis-aniruddha-adaks-projects.vercel.app>
+
 Because the output is a plain static directory, AEGIS can be hosted anywhere.
 
 **Vercel** — the reference deployment:
@@ -699,7 +701,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
 **These are structural models, not predictions.**
 
-[Live](https://aegis-nmiwep6hc-aniruddha-adaks-projects.vercel.app) ·
+[Live](https://aegis-aniruddha-adaks-projects.vercel.app) ·
 [Source](https://github.com/aniruddhaadak80/aegis) ·
 [Issues](https://github.com/aniruddhaadak80/aegis/issues)
 
