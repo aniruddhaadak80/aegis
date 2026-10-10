@@ -176,7 +176,12 @@ export function betaCommonCause(
 /*  Full PRA computation                                                      */
 /* -------------------------------------------------------------------------- */
 
-interface CoreResult extends Omit<PAResult, "efficiency" | "weakestLink"> {}
+/**
+ * Fault-tree evaluation only — no marginal-value analysis. Expressed as a
+ * type alias rather than an empty interface extending its supertype, which
+ * ESLint flags as a no-op.
+ */
+type CoreResult = Omit<PAResult, "efficiency" | "weakestLink">;
 
 /**
  * Fault-tree evaluation only — no marginal-value analysis.

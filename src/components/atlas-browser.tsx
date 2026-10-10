@@ -65,7 +65,7 @@ export function AtlasBrowser() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search 41 techniques, failure modes, authors…"
+              placeholder="Search 59 techniques, failure modes, authors…"
               aria-label="Search techniques"
               className="w-full border border-rule-2 bg-ink-2 px-3 py-2 text-[0.8125rem] text-fg placeholder:text-fg-4 focus:border-fg-4 focus:outline-none"
             />

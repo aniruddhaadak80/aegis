@@ -399,7 +399,7 @@ export function PRAWorkbench() {
       </div>
 
       <div className="mt-5 grid gap-5 lg:grid-cols-2">
-        <PRAAnalysis result={result} barriers={barriers} pBase={pBase} beta={beta} />
+        <PRAAnalysis result={result} barriers={barriers} />
         <div className="space-y-5">
           <SwissCheese result={result} />
           <ReferenceScale />
@@ -677,13 +677,9 @@ function ReferenceScale() {
 function PRAAnalysis({
   result,
   barriers,
-  pBase,
-  beta,
 }: {
   result: PAResult;
   barriers: Barrier[];
-  pBase: number;
-  beta: number;
 }) {
   const [tab, setTab] = useState<"importance" | "frontier">("importance");
 
@@ -715,7 +711,7 @@ function PRAAnalysis({
         {tab === "importance" ? (
           <ImportancePanel result={result} />
         ) : (
-          <FrontierPanel result={result} barriers={barriers} pBase={pBase} beta={beta} />
+          <FrontierPanel result={result} barriers={barriers} />
         )}
       </div>
     </section>
@@ -837,13 +833,9 @@ function ImportancePanel({ result }: { result: PAResult }) {
 function FrontierPanel({
   result,
   barriers,
-  pBase,
-  beta,
 }: {
   result: PAResult;
   barriers: Barrier[];
-  pBase: number;
-  beta: number;
 }) {
   const active = barriers.filter((b) => b.on);
   if (!active.length) return <Empty />;

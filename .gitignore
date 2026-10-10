@@ -10,6 +10,12 @@ pnpm-debug.log*
 out/
 export/
 
+# Captured verification output from `bun run test`
+out.txt
+
+# TypeScript incremental build info
+*.tsbuildinfo
+
 # Environment
 .env.local
 .env
@@ -32,3 +38,4 @@ Thumbs.db
 *.njsproj
 *.sln
 *.swp
+.vercel
