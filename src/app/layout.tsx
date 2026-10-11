@@ -26,6 +26,59 @@ const instrument = Instrument_Serif({
 
 const SITE_URL = "https://aegis-aniruddha-adaks-projects.vercel.app";
 
+/**
+ * Structured data. Static-export friendly (a plain JSON-LD script tag, not a
+ * runtime fetch), and enough for Google to render a rich result.
+ */
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: "AEGIS",
+      url: SITE_URL,
+      description:
+        "An interactive instrument for reasoning about AI control methods and superintelligence risk.",
+      inLanguage: "en-US",
+      publisher: { "@id": `${SITE_URL}/#org` },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: `${SITE_URL}/atlas?q={search_term_string}`,
+        "query-input": "required name=search_term_string",
+      },
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "@id": `${SITE_URL}/#source`,
+      name: "AEGIS — The Superintelligence Control Stack",
+      url: SITE_URL,
+      description:
+        "Seven-layer taxonomy of AI control techniques with a two-stage probabilistic risk assessment engine adapted from nuclear and aerospace practice.",
+      programmingLanguage: ["TypeScript", "CSS"],
+      runtimePlatform: "Next.js",
+      codeRepository: "https://github.com/aniruddhaadak80/aegis",
+      license: "https://opensource.org/licenses/MIT",
+      author: { "@id": `${SITE_URL}/#org` },
+      keywords:
+        "AI safety, superintelligence, alignment, probabilistic risk assessment, AI control, interpretability, fault tree",
+    },
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#org`,
+      name: "AEGIS",
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/icon-512.png`,
+        width: 512,
+        height: 512,
+      },
+      sameAs: ["https://github.com/aniruddhaadak80/aegis"],
+    },
+  ],
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -91,6 +144,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <SiteFooter />
+
+        <script
+          type="application/ld+json"
+          // JSON.stringify over a literal, never over user data — no injection surface.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </body>
     </html>
   );

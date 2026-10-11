@@ -323,6 +323,38 @@ is the honest headline of the whole project.
 
 ## Interactive visualisations
 
+### The Swiss-cheese stack
+
+The barrier set rendered as slices, each with an aperture set by its
+unavailability $q$ — and, critically, the β common-cause term drawn as a hole
+drilled through *every slice at once*, which is what makes it structurally
+different from the holes the barriers have on their own:
+
+```mermaid
+flowchart LR
+    subgraph STACK["The runtime barrier stack — catastrophe requires ALL slices to align"]
+        direction LR
+        S1["① Containment<br/>q = 0.30<br/>aperture &#9608;&#9608;&#9608;&#9608;&#9601;&#9601;&#9601;&#9601;"]
+        S2["② Verification<br/>q = 0.55<br/>aperture &#9608;&#9601;&#9601;&#9601;&#9601;&#9601;&#9601;&#9601;"]
+        S3["③ Governance<br/>q = 0.45<br/>aperture &#9608;&#9608;&#9608;&#9601;&#9601;&#9601;&#9601;&#9601;"]
+        S4["④ Recovery<br/>q = 0.60<br/>aperture &#9608;&#9601;&#9601;&#9601;&#9601;&#9601;&#9601;&#9601;"]
+        S1 --> S2 --> S3 --> S4
+    end
+
+    BETA{{"β · min(q)<br/>COMMON CAUSE<br/><br/>One shared defect<br/>propagates through<br/>every slice"}}
+
+    S4 -.->|"independent path:<br/>P(all fail) = Π q = 0.045"| ESC["ESCAPE<br/>via independence"]
+    BETA ==>|"shared path: q_ccf = β·min(q)<br/>no redundancy touches this"| ESC2["ESCAPE<br/>via shared defect"]
+
+    style STACK fill:#fb923c10,stroke:#fb923c,color:#fb923c
+    style BETA fill:#ff4d5e22,stroke:#ff4d5e,stroke-width:2px,color:#ff4d5e
+    style ESC fill:#fb718522,stroke:#fb7185,color:#fb7185
+    style ESC2 fill:#fb718522,stroke:#fb7185,color:#fb7185
+```
+
+Two independent routes to the same outcome. The second one is the reason the
+engine carries β as a first-class parameter rather than a footnote.
+
 | Visualisation | What it shows |
 |:--|:--|
 | 🧀 **Swiss-cheese stack** | The runtime barrier set as slices with aperture determined by each barrier's $q$; the β common-cause term appears as a hole drilled through *every* slice at once |
@@ -521,6 +553,44 @@ rendered `latex` · `verified`
 | `/math` | **Formula Library** | Every formula in the model, KaTeX-rendered with plain-language readings |
 | `/governance` | **Governance** | Framework timeline — RSP, FSF, Preparedness, EU AI Act — with adoption dates and status |
 | `/methodology` | **Methodology** | The provenance ladder and the rules used to label every number |
+
+### The governance record, as three streams
+
+The full timeline is on [`/governance`](https://aegis-aniruddha-adaks-projects.vercel.app/governance). Its shape:
+
+```mermaid
+flowchart LR
+    subgraph RESEARCH["Research — what we learned"]
+        direction LR
+        R1["2016<br/>Concrete Problems"] --> R2["2022<br/>Goal Misgeneralization"] --> R3["2024<br/>Sleeper Agents"] --> R4["2025<br/>Agentic Misalignment"]
+    end
+
+    subgraph FRAMEWORKS["Lab frameworks — thresholds set by the constrained party"]
+        direction LR
+        F1["2023<br/>RSP v1"] --> F2["2024<br/>FSF v1"] --> F3["2025<br/>PF v2 · FSF v3"] --> F4["2026<br/>FSF v3.1 · RSP v3.4"]
+    end
+
+    subgraph POLICY["State policy — binding force"]
+        direction LR
+        P1["2023<br/>Bletchley"] --> P2["2024<br/>EU AI Act"] --> P3["2024<br/>Seoul Commitments"] --> P4["2025<br/>Paris"]
+    end
+
+    R3 -. "the result that ended<br/>behavioural safety training<br/>as a sufficient answer" .-> F4
+    R4 -. "sixteen models, five labs,<br/>no prompting required" .-> F4
+
+    style RESEARCH fill:#c084fc18,stroke:#c084fc,color:#c084fc
+    style FRAMEWORKS fill:#4ade8018,stroke:#4ade80,color:#4ade80
+    style POLICY fill:#38bdf818,stroke:#38bdf8,color:#38bdf8
+    style R3 fill:#fb718518,stroke:#fb7185,color:#fb7185
+    style R4 fill:#fb718518,stroke:#fb7185,color:#fb7185
+    style F4 fill:#4ade8028,stroke:#4ade80,color:#4ade80
+```
+
+> **Every threshold-setting framework in the field is authored by the party it
+> constrains.** METR's 2025 survey of twelve providers found most scored below
+> 50% on the criteria; an affordance analysis of the Preparedness Framework
+> found it permits CEO override of safety recommendations. Voluntary commitments
+> bind the committed.
 
 ---
 

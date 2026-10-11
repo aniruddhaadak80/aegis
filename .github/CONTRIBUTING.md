@@ -74,6 +74,20 @@ Adding a method? Make sure the record includes every field:
 - Widening an efficacy band that looks false-precision.
 - Improving the plain-language reading of a formula on `/math`.
 
+## Repository assets
+
+| File | Purpose |
+|:--|:--|
+| `public/screenshots/*.png` | The 7 screenshots embedded in `README.md`, captured from the static export at 1600×1200 |
+| `public/social-preview.png` | 1280×640 social card for the GitHub repo — upload it at **Settings → Options → Social preview → Edit** (the upload API is not public) |
+| `src/app/opengraph-image.png` | 1200×630 OpenGraph card, auto-wired by Next.js into `og:image` |
+| `src/app/icon.svg` | Inline SVG icon, wired into `<link rel="icon">` |
+| `src/app/apple-icon.png` | 180×180 Apple touch icon |
+| `public/icon-512.png` | 512×512 maskable icon for the web manifest |
+
+If you change the brand colours in `globals.css` (`@theme`), re-render the OG
+card, the icon, and the social preview so they stay in sync.
+
 ## Code of conduct
 
 Be decent. Assume good faith, critique the model rather than the person, and
