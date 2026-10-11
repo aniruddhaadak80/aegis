@@ -33,7 +33,10 @@ jobs:
         run: bunx tsc --noEmit
 
       - name: Verify PRA engine numerically
-        run: bun run test
+        run: bun run scripts/verify-pra.ts
+
+      - name: Verify catalog data integrity
+        run: bun run scripts/verify-data.ts
 
   build:
     name: Build

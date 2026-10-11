@@ -24,8 +24,10 @@ const instrument = Instrument_Serif({
   display: "swap",
 });
 
+const SITE_URL = "https://aegis-aniruddha-adaks-projects.vercel.app";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://aegis-control-stack.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "AEGIS — The Superintelligence Control Stack",
     template: "%s · AEGIS",
@@ -42,21 +44,32 @@ export const metadata: Metadata = {
     "corrigibility",
     "frontier safety frameworks",
   ],
-  authors: [{ name: "AEGIS" }],
+  authors: [{ name: "Aniruddha Adak", url: "https://github.com/aniruddhaadak80" }],
+  creator: "Aniruddha Adak",
+  publisher: "Aniruddha Adak",
+  alternates: { canonical: "/" },
   openGraph: {
     title: "AEGIS — The Superintelligence Control Stack",
     description:
-      "Seven layers of control. Forty techniques. The mathematics of defence in depth. Every number sourced.",
+      "Fifty-nine techniques across seven layers of control. The mathematics of defence in depth, modelled honestly. Every number sourced.",
     type: "website",
     siteName: "AEGIS",
+    locale: "en_US",
+    url: SITE_URL,
   },
   twitter: {
     card: "summary_large_image",
     title: "AEGIS — The Superintelligence Control Stack",
     description:
       "An instrument for reasoning about superintelligence risk, built from the primary literature.",
+    creator: "@aniruddhaadak80",
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+  category: "technology",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

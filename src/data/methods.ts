@@ -72,7 +72,7 @@ export const METHODS: Method[] = [
       "InstructGPT: 1.3B-preference model outperformed 175B supervised on some tasks — the ceiling is data, not scale",
       "Sleeper Agents showed RLHF safety training can *increase* trigger-recognition, hiding backdoors better",
     ],
-    dependsOn: ["reward-model-overoptimisation", "cirl", "constitutional-ai"],
+    dependsOn: ["cirl"],
     formulaNote:
       "Maximise human preference under a KL trust-region against the pretrained policy — the KL term is what stops the policy running off to reward-hacking country.",
     latex: String.raw`\max_{\pi_\theta}\ \mathbb{E}_{(x,y)\sim D}\big[R_\phi(x,y)\big] - \beta\,\mathrm{KL}\!\big[\pi_\theta(y|x)\,\|\,\pi_{\text{ref}}(y|x)\big]`,
@@ -106,7 +106,7 @@ export const METHODS: Method[] = [
       "Does not survive a human who is consistently adversarial rather than stochastic",
       "A corrigibility-through-uncertainty property can be unstable under distribution shift",
     ],
-    dependsOn: ["inverse-rl", "corrigibility"],
+    dependsOn: ["inverse-rl"],
     formulaNote:
       "The agent solves for a reward function that is consistent with the human's observed behaviour, so deferring to the human is rewarded under the agent's own belief.",
     latex: String.raw`R^*(s,a) = \arg\max_{R \in \mathcal{R}}\ \mathbb{E}_{H \sim \sigma}\left[\sum_{t} \gamma^t\, R(s_t, a_t)\right]`,
@@ -140,7 +140,7 @@ export const METHODS: Method[] = [
       "Constitutional methods have known blind spots to some jailbreak families (many-shot, obfuscated)",
       "Adding more principles measurably degraded helpfulness in the paper's own ablations",
     ],
-    dependsOn: ["rlaif"],
+    dependsOn: ["rlhf"],
     formulaNote:
       "A self-play fixed point: the response policy is trained to maximise P(preferred | constitution), where the preference judgement is itself produced by a model reading only the constitution.",
     latex: String.raw`\theta^\star = \arg\max_\theta\ \mathbb{E}_{x}\Big[\log \sigma\big(\Delta_\phi(x, y_1, y_2 \mid C)\big)\Big],\qquad C = \text{constitution}`,
@@ -268,7 +268,7 @@ export const METHODS: Method[] = [
       "Amplification may compound errors rather than cancel them",
       "No accepted demonstration at the capability level that matters",
     ],
-    dependsOn: ["ai-debate", "weak-to-strong", "iterated-amplification", "market-making"],
+    dependsOn: [],
     formulaNote:
       "Recursive amplification: each step must preserve the property that a weaker checker can verify a stronger step's output — until the top of the recursion is human-checkable.",
     latex: String.raw`R_{k+1}(s,a) = \mathbb{E}_{\pi_k}\Big[\sum_{t} \gamma^t\, R_k(s_t, a_t) \Big],\qquad \text{with}\ \ R_k \text{ checkable by } \mathcal{H}_{k} \supseteq \mathcal{H}_{k+1}`,
@@ -299,7 +299,7 @@ export const METHODS: Method[] = [
       "Amplification resources may not be the bottleneck; representation may be",
       "Any teacher error present at round k is inherited at round k+1",
     ],
-    dependsOn: ["scalable-oversight", "ai-debate"],
+    dependsOn: ["scalable-oversight"],
     formulaNote:
       "Each round bootstraps a strictly stronger teacher from a weaker one, trading compute for supervision quality.",
     latex: String.raw`\pi_{k+1} \leftarrow \text{Train}\Big(\mathcal{D}\big[\pi_k^{\,\uparrow C}\big]\Big),\qquad \pi_k^{\,\uparrow C} = \arg\max_{\pi \in \pi_k} \mathbb{E}\big[R(s,a)\big] \text{ s.t. compute}(a) \le C`,
@@ -389,7 +389,7 @@ export const METHODS: Method[] = [
       "Error compounding rather than averaging — no variance-reduction guarantee",
       "Strongly overlapping with iterated amplification; unclear independence",
     ],
-    dependsOn: ["iterated-amplification", "reward-model-overoptimisation"],
+    dependsOn: ["iterated-amplification"],
     formulaNote:
       "R_{k+1} is trained on R_k's amplified predictions, mirroring iterated amplification one level up the stack.",
     latex: String.raw`R_{k+1} = \mathrm{Fit}\Big(\mathcal{D}\big[R_k^{\,\uparrow}\big]\Big)`,
@@ -551,7 +551,7 @@ export const METHODS: Method[] = [
       "The Sleeper Agents result: adversarial training taught models to *hide* backdoors better, not remove them",
       "Reward hacking on the red side — the attacker finds a shortcut that scores well but transfers poorly",
     ],
-    dependsOn: ["adversarial-training"],
+    dependsOn: [],
     formulaNote:
       "The red team maximises elicitability while the blue team minimises it; both are policies in the same action space.",
     latex: String.raw`\max_\pi\ \mathbb{E}_{(x,a)}\big[\mathbb{1}\big[\text{unsafe}(a)\big]\big] \quad\text{vs.}\quad \min_\theta\ \mathbb{E}_{(x,a)}\big[\mathbb{1}\big[\text{unsafe}(a)\big]\big]`,
@@ -1421,7 +1421,7 @@ export const METHODS: Method[] = [
       "Requires evaluator literacy that most frameworks currently lack",
       "Cites the aerospace case, where components are simpler than LLMs",
     ],
-    dependsOn: ["third-party-audits"],
+    dependsOn: [],
     formulaNote:
       "Confidence in the top-level claim decomposes into confidence per sub-claim, multiplied together — so one weak link bounds the whole.",
     latex: String.raw`C(\text{top}) = \prod_{i} C(\text{sub}_i)^{\, w_i},\qquad \sum_i w_i = 1`,
@@ -1806,7 +1806,7 @@ export const METHODS: Method[] = [
       "Requires precise knowledge of the reward function",
       "Grew out of the box-draining literature whose assumptions rarely hold",
     ],
-    dependsOn: ["corrigibility", "cirl"],
+    dependsOn: ["cirl"],
     formulaNote:
       "Interrupting must not make the agent worse off than uninterrupted continuation — a strong condition that most RL agents violate.",
     latex: String.raw`Q_{\pi}\!\left(s_t,\ a_t \middle| \text{interrupt then resume}\right) \;\ge\; Q_{\pi}\!\left(s_t,\ a_t\right)\quad\forall\, t`,

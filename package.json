@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "bun run scripts/verify-pra.ts"
+    "test": "bun run scripts/verify-pra.ts && bun run scripts/verify-data.ts"
   },
   "dependencies": {
     "katex": "^0.19.0",

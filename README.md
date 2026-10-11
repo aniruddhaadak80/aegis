@@ -13,11 +13,39 @@ assessment engine adapted from nuclear and aerospace practice.
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white)](next.config.ts)
 [![Bun](https://img.shields.io/badge/Bun-1.3-000000?style=for-the-badge&logo=bun&logoColor=white)](package.json)
 [![License](https://img.shields.io/badge/License-MIT-fafafa?style=for-the-badge)](LICENSE)
-[![CI](https://img.shields.io/badge/CI-lint%20%2B%20build-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
+[![CI](https://img.shields.io/badge/CI-lint%20%2B%20typecheck%20%2B%20479%20tests-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-47%20%2B%20432%20passing-3ddc97?style=for-the-badge)](#verification)
 
 *Built by [Aniruddha Adak](https://github.com/aniruddhaadak80) · Kolkata, India*
 
 </div>
+
+---
+
+<details open>
+<summary><b>Contents</b></summary>
+
+| | |
+|:--|:--|
+| **[The tour](#the-tour)** | 7 screenshots of every route |
+| **[Why this exists](#why-this-exists)** | The epistemic stance |
+| **[The seven-layer control stack](#the-seven-layer-control-stack)** | 59 methods, colour-coded by when they act |
+| **[The PRA engine](#the-pra-engine)** | Two-stage fault tree, β floor, importance measures |
+| **[Interactive visualisations](#interactive-visualisations)** | Swiss-cheese, frontier, hazard curve |
+| **[The method atlas](#the-method-atlas)** | All 59 methods, layer by layer |
+| **[Seven routes](#whats-inside--seven-routes)** | Every page in the app |
+| **[Sourced evidence](#sourced-evidence)** | The 4-tier provenance ladder + bibliography |
+| **[Verification](#verification)** | 47 math assertions · 432 data checks |
+| **[Common misconceptions](#common-misconceptions)** | The five errors this model exists to avoid |
+| **[Tech stack](#tech-stack)** | Next.js 16, React 19, Tailwind v4, Bun |
+| **[Design system](#design-system)** | The instrument-panel aesthetic |
+| **[Project structure](#project-structure)** | Where everything lives |
+| **[Quick start](#quick-start)** | Clone → run → build |
+| **[Deployment](#deployment)** | Static export, host it anywhere |
+| **[Contributing](#contributing)** | The two inviolable rules |
+| **[License](#license)** | MIT |
+
+</details>
 
 ---
 
@@ -308,7 +336,56 @@ is the honest headline of the whole project.
 ## The method atlas
 
 59 techniques, each with a citation, a formula, an editorial efficacy band,
-failure modes, and dependency edges into other controls.
+failure modes, and **dependency edges** into other controls.
+
+### How the techniques build on each other
+
+```mermaid
+flowchart LR
+    subgraph SPEC["Specification lineage — goal inference"]
+        direction LR
+        IRL["inverse-rl"] --> CIRL["cirl<br/>cooperative IRL"]
+        CIRL --> RLHF["rlhf"]
+        RLHF --> CAI["constitutional-ai"]
+        CAI --> RLAIF["rlaif"]
+        CAI --> CC["constitutional-<br/>classifiers"]
+        RLHF --> DPO["dpo"]
+        IRL --> GMG["goal-<br/>misgeneralization"]
+        RLHF --> GMG
+    end
+
+    subgraph INTERP["Interpretability lineage — reading internals"]
+        direction LR
+        LP["linear-probes"] --> ILL["interpretability<br/>illusion"]
+        LP --> RE["representation<br/>engineering"]
+        LP --> MPC["mechanistic probes<br/>of sycophancy"]
+        AP["activation-patching"] --> MPC
+        SAE["sparse-autoencoders"] --> MONO["monosemanticity"]
+        SAE --> AG["attribution graphs"]
+    end
+
+    style IRL fill:#38bdf822,stroke:#38bdf8,color:#38bdf8
+    style CIRL fill:#38bdf822,stroke:#38bdf8,color:#38bdf8
+    style RLHF fill:#38bdf822,stroke:#38bdf8,color:#38bdf8
+    style CAI fill:#38bdf822,stroke:#38bdf8,color:#38bdf8
+    style RLAIF fill:#38bdf822,stroke:#38bdf8,color:#38bdf8
+    style CC fill:#38bdf822,stroke:#38bdf8,color:#38bdf8
+    style DPO fill:#38bdf822,stroke:#38bdf8,color:#38bdf8
+    style GMG fill:#38bdf822,stroke:#38bdf8,color:#38bdf8
+    style LP fill:#c084fc22,stroke:#c084fc,color:#c084fc
+    style SAE fill:#c084fc22,stroke:#c084fc,color:#c084fc
+    style AP fill:#c084fc22,stroke:#c084fc,color:#c084fc
+    style ILL fill:#c084fc22,stroke:#c084fc,color:#c084fc
+    style RE fill:#c084fc22,stroke:#c084fc,color:#c084fc
+    style MPC fill:#c084fc22,stroke:#c084fc,color:#c084fc
+    style MONO fill:#c084fc22,stroke:#c084fc,color:#c084fc
+    style AG fill:#c084fc22,stroke:#c084fc,color:#c084fc
+```
+
+> **Dependencies inside a layer are correlational failure risk.** Methods that
+> require each other are *not independent barriers*, no matter how many times
+> they are counted — which is precisely what the β common-cause term models.
+
 
 <details>
 <summary><b>🔵 Specification — 15 methods</b> &nbsp;<code>#38bdf8</code></summary>
@@ -480,6 +557,157 @@ tiers are shown on the methodology page and inline throughout:
 
 ---
 
+## Verification
+
+AEGIS ships two test suites. Both run in CI on every push and PR.
+
+### 47 numerical assertions — `scripts/verify-pra.ts`
+
+Every formula in `src/lib/pra.ts` is checked against a hand-computed value:
+
+| Checked | Assertion |
+|:--|:--|
+| `seriesDefeat` | $P(\text{all fail}) = \prod q_i$ — 4×0.6 = 0.1296, 8×0.5 = 1/256, 16×0.5 = 1/65536 |
+| `seriesReliability` | $1 - \prod q_i$; a perfect barrier ($q=0$) zeroes defeat probability |
+| `betaCommonCause` | β=0 identity holds; β=1, $q_{\min}=0.2$ matches the union formula |
+| **Birnbaum** | $BI_i = \prod_{j\neq i} q_j$ — verified against a 2-barrier worked example |
+| **Fussell–Vesely** | Sole-rescuer attribution **sums to exactly 1** |
+| **RAW / RRW** | $1/(1-\prod_{j\neq i}q_j)$ and $1-q_i$ |
+| Two-stage composition | $P_{\text{arises}} = 0.8 \times 0.5 \times 0.75$; $P_{\text{cat}} = 0.06$ |
+| **Empty barrier set** | $Q_{\text{defeat}} = 1$ — no defence, not a vacuous pass |
+| **Monotonicity** | Stronger barriers lower risk; adding a barrier *never* raises it; risk falls strictly for stack depths 1→12 |
+| **β boundary** | β raises risk and never lowers it, at every value |
+| Efficiency ranking | Leave-one-out deltas; cheaper control with identical risk removal ranks higher; `share` sums to 1 |
+
+The invariants that matter are **asserted rather than assumed** — in particular
+that adding a barrier can never increase risk, which is the whole claim of
+defence in depth.
+
+### 432 data-integrity checks — `scripts/verify-data.ts`
+
+The atlas renders a dependency graph from `dependsOn` edges. A dangling
+reference does not throw — it silently produces a node with no target, which
+is exactly the class of bug that survives visual review. This suite fails
+loudly instead.
+
+| Check | What it catches |
+|:--|:--|
+| **Dangling `dependsOn` edges** | References to methods that don't exist |
+| **Dependency cycles** | Mutual dependencies that would loop a graph renderer |
+| Duplicate ids / unknown layers | Copy-paste records |
+| Per-layer counts | 15 / 10 / 9 / 7 / 5 / 7 / 6 = 59, drift detection |
+| Complete provenance records | Every field the app reads must be present |
+| Efficacy band coherence | `low ≤ efficacy ≤ high`, all within 0–100 |
+| Enum validity | `confidence`, `cost` 1–5, `trl` 1–9 |
+| Hex colour format | Layer ramp tokens |
+
+This suite has already earned its keep. It caught **four real bugs** in the
+catalog that had shipped:
+
+1. **Two dangling edges** — `rlhf` and `recursive-reward-modeling` both
+   depended on `"reward-model-overoptimisation"`, a method that was never
+   added. Two broken edges in the rendered graph.
+2. **Two dependency cycles** — `constitutional-ai ↔ rlaif` and
+   `rlhf ↔ constitutional-ai`, both backwards in time (RLHF and Constitutional
+   AI both predate RLAIF).
+3. **Four more cycles** — `scalable-oversight`, `red-teaming`, `safety-cases`
+   and `safe-interruptibility` each had mutual dependencies with their own
+   children, from `dependsOn` being filled in symmetrically.
+
+All were repaired and the suite now guards against regressions.
+
+```bash
+bun run test      # 47 + 432 checks
+```
+
+---
+
+## Common misconceptions
+
+The model is built to avoid a specific set of errors. They are worth naming,
+because each one is common and each one makes the stack look stronger than it is.
+
+<details>
+<summary><b>"More barriers means proportionally less risk"</b></summary>
+
+<br>
+
+Not linearly — **exponentially**, and only while the barriers are independent.
+Adding a barrier multiplies the escape probability by $q < 1$, so a stack of
+six barriers each at $q = 0.4$ is not 40% safer but $0.4^6 = 0.4\%$ of the
+single-barrier risk. That is the good news, and it is real.
+
+The bad news is the second half: **independence is the assumption that fails.**
+If the barriers were designed by the same teams against the same benchmarks,
+their failures correlate, and the β factor sets a floor that no amount of
+additional barriers can cross.
+
+</details>
+
+<details>
+<summary><b>"A strong specification makes the containment stack redundant"</b></summary>
+
+<br>
+
+Category error, and the most consequential one. A specification control
+*reduces the probability that a dangerous capability arises*. It does not
+*block* an event. Treating it as a runtime barrier is exactly what the flat
+single-stack model gets wrong: it makes "we did good specification work" look
+like "we are contained."
+
+A model can be exactly as specified as its designers intended and still do
+something its designers did not intend. Specification errors are not the only
+failure mode; they are the one we are worst at detecting from the outside.
+
+</details>
+
+<details>
+<summary><b>"Redundancy handles common-cause failure"</b></summary>
+
+<br>
+
+Redundancy is powerless against a shared defect, by construction. Three
+identical sandboxes protect against *one* sandbox having a bug. They do
+nothing about *the concept* of sandboxing being inadequate.
+
+This is why β is a free parameter you can slide in the engine rather than a
+fitted value: **nobody has measured it for AI safety**, and the honest answer
+is that it is probably larger than anyone would like.
+
+</details>
+
+<details>
+<summary><b>"An untested model is a 0% risk model"</b></summary>
+
+<br>
+
+The engine deliberately treats an empty barrier set as providing **no defence**
+— $Q_{\text{defeat}} = 1$ — rather than as a vacuous pass. This is the single
+most important line in [`pra.ts`](src/lib/pra.ts), because the naive
+implementation of a product over an empty set returns 1 by convention, which
+turns "we deployed no barriers" into "the event cannot happen."
+
+</details>
+
+<details>
+<summary><b>"The efficacy percentages are measurements"</b></summary>
+
+<br>
+
+They are **editorial estimates**, labelled as such in the data file and on
+every screen where they appear. They exist to make the *structure* of the
+problem legible — to let you see that a cheap 34%-efficacy control can
+outrank an expensive 60%-efficacy one on risk removed per unit cost — not to
+forecast outcomes.
+
+Where a real measurement exists (METR task horizons, Epoch compute trends,
+ESPAI survey results, control-evaluation results), it is labelled `measured`
+or `survey` and kept distinct. The labels are the point.
+
+</details>
+
+---
+
 ## Tech stack
 
 | Layer | Choice | Version |
@@ -561,7 +789,8 @@ aegis/
 │   ├── screenshots/                # README imagery (7 pages)
 │   └── *.svg
 ├── scripts/
-│   └── verify-pra.ts               # 47 numerical assertions on the engine
+│   ├── verify-pra.ts               # 47 numerical assertions on the engine
+│   └── verify-data.ts              # 432 catalog integrity checks
 ├── src/
 │   ├── app/
 │   │   ├── page.tsx                # briefing / hero
@@ -570,7 +799,11 @@ aegis/
 │   │   ├── risk/page.tsx           # PRA engine + fault tree
 │   │   ├── math/page.tsx           # formula library (KaTeX)
 │   │   ├── methodology/page.tsx    # provenance rules
-│   │   └── governance/page.tsx     # framework timeline
+│   │   ├── governance/page.tsx     # framework timeline
+│   │   ├── layout.tsx              # fonts + SEO/OG metadata
+│   │   ├── icon.svg                # hexagon mark
+│   │   ├── opengraph-image.png     # social card, 1200×630
+│   │   └── globals.css             # design tokens (@theme)
 │   ├── components/
 │   │   ├── atlas-browser.tsx
 │   │   ├── hazard-chart.tsx
@@ -620,13 +853,9 @@ bun run build          # emits ./out
 | `bun run build` | Production build; static site in `./out` |
 | `bun run start` | Serve the built app |
 | `bun run lint` | ESLint via `eslint-config-next` |
-| `bun run test` | 47 numerical assertions against the PRA engine — hand-computed expected values for every formula, the two-stage composition, the β floor, importance measures, monotonicity, and the leave-one-out efficiency ranking |
+| `bun run test` | **47** PRA math assertions **+ 432** catalog integrity checks |
 
-The test suite is the reason the numbers on `/risk` can be trusted: `seriesDefeat`,
-`betaCommonCause`, `evaluate`, and `computePRA` are each checked against
-hand-computed values, and the invariants that matter — *adding a barrier never
-increases risk*, *an empty barrier set provides no defence*, *β raises risk and
-never lowers it* — are asserted rather than assumed.
+See the [Verification](#verification) section for what each suite asserts.
 
 ---
 
@@ -703,7 +932,9 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
 [Live](https://aegis-aniruddha-adaks-projects.vercel.app) ·
 [Source](https://github.com/aniruddhaadak80/aegis) ·
-[Issues](https://github.com/aniruddhaadak80/aegis/issues)
+[Issues](https://github.com/aniruddhaadak80/aegis/issues) ·
+[Changelog](CHANGELOG.md) ·
+[License](LICENSE)
 
 *Built with the OpenCode agent system. Thanks to the open-source AI safety
 community for the research that makes this legible.*
