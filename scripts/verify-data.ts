@@ -4,7 +4,7 @@
 // reference does not throw — it silently produces a node with no target, which
 // is the class of bug that survives visual review. These checks fail loudly.
 import { METHODS, METHOD_MAP, METHODS_BY_LAYER } from "../src/data/methods";
-import { LAYERS, LAYER_MAP } from "../src/data/layers";
+import { LAYERS } from "../src/data/layers";
 
 let pass = 0;
 let fail = 0;

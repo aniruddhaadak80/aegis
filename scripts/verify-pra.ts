@@ -20,13 +20,14 @@ function check(name: string, got: number, want: number, tol = 1e-9) {
     console.log(`  FAIL ${name} = ${got}, expected ${want}`);
   }
 }
-function assert(name: string, cond: boolean) {
+function assert(name: string, cond: boolean, detail = "") {
   if (cond) {
     pass++;
     console.log(`  ok   ${name}`);
   } else {
     fail++;
-    console.log(`  FAIL ${name}`);
+    const msg = detail ? `${name} — ${detail}` : name;
+    console.log(`  FAIL ${msg}`);
   }
 }
 
@@ -253,6 +254,87 @@ const dear = computePRA({
 assert(
   "identical risk, lower cost ranks higher",
   cheap.efficiency[0].perCost > dear.efficiency[0].perCost,
+);
+
+console.log("\n== shareable configuration codec ==");
+// A configuration must survive a URL round-trip exactly, and anything
+// malformed must be rejected wholesale rather than half-applied.
+import { decodeConfig, encodeConfig, type St } from "../src/lib/pra-config";
+import { METHODS } from "../src/data/methods";
+
+const IDS = new Set(METHODS.map((m) => m.id));
+const base: St = {
+  rlhf: { id: "rlhf", v: 0.34, on: true, redundancy: 1 },
+  sandboxing: { id: "sandboxing", v: 0.7, on: true, redundancy: 1 },
+  corrigibility: { id: "corrigibility", v: 0.4, on: false, redundancy: 1 },
+};
+
+const enc = encodeConfig(base, 0.6, 0.12, base);
+check("defaults encode to an empty fragment", enc.length, 0, 1e-9);
+
+const enc2 = encodeConfig(base, 0.85, 0.4, base);
+assert("non-default p and b are encoded", enc2.startsWith("p=850&b=400"), enc2);
+const round2 = decodeConfig(enc2, IDS)!;
+check("pBase round-trips", round2.pBase, 0.85, 1e-12);
+check("beta round-trips", round2.beta, 0.4, 1e-12);
+
+// Deviation encoding: baseline vs. a state in which exactly one control moved.
+// Only that one may appear in the link — the rest of the stack is implied by
+// the defaults, which is what keeps links short.
+const moved: St = {
+  ...base,
+  sandboxing: { id: "sandboxing", v: 0.7, on: false, redundancy: 2 },
+};
+const encDev = encodeConfig(moved, 0.6, 0.12, base);
+assert(
+  "only the changed control is encoded",
+  encDev === "d=sandboxing.700.0.2",
+  encDev,
+);
+const roundDev = decodeConfig(encDev, IDS)!;
+check("changed control restores its v", roundDev.state.sandboxing.v, 0.7, 1e-12);
+check("changed control restores its on", roundDev.state.sandboxing.on ? 1 : 0, 0, 1e-12);
+check("changed control restores its redundancy", roundDev.state.sandboxing.redundancy, 2, 1e-12);
+assert(
+  "untouched controls are absent from the link",
+  roundDev.state.rlhf === undefined && roundDev.state.corrigibility === undefined,
+  JSON.stringify(roundDev.state),
+);
+
+const changed: St = {
+  rlhf: { id: "rlhf", v: 0.51, on: false, redundancy: 3 },
+};
+const enc3 = encodeConfig(changed, 0.6, 0.12, base);
+const round3 = decodeConfig(enc3, IDS)!;
+check("v round-trips", round3.state.rlhf.v, 0.51, 1e-12);
+check("on round-trips", round3.state.rlhf.on ? 1 : 0, 0, 1e-12);
+check("redundancy round-trips", round3.state.rlhf.redundancy, 3, 1e-12);
+assert(
+  "layering a link over defaults restores the untouched controls",
+  decodeConfig(enc3, IDS)!.state.sandboxing === undefined,
+);
+
+// Rejection: a malformed link must degrade to defaults, not half-apply.
+for (const bad of [
+  "#d=nonexistent.500.1.1",     // unknown control id
+  "#d=rlhf.500.1.1.extra",      // wrong field count
+  "#d=rlhf.abc.1.1",            // non-numeric v
+  "#d=rlhf.500.2.1",            // on is not 0/1
+  "#d=rlhf.500.1.0",            // redundancy below 1
+  "#d=rlhf.500.1.11",           // redundancy above 9
+  "#p=1500",                    // pBase out of range
+  "#p=abc",                     // pBase non-numeric
+  "#p=NaN",
+]) {
+  assert(`rejects ${bad}`, decodeConfig(bad, IDS) === null);
+}
+assert("accepts an empty fragment as a no-op", decodeConfig("", IDS) === null);
+assert("accepts a bare #", decodeConfig("#", IDS) === null);
+check(
+  "empty fragment is a no-op, not a crash",
+  decodeConfig("#", IDS) === null ? 1 : 0,
+  1,
+  1e-12,
 );
 
 console.log(`\n${pass} passed, ${fail} failed\n`);

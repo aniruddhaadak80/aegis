@@ -1,8 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LAYER_MAP, type LayerId } from "@/data/layers";
 import { METHODS } from "@/data/methods";
+import {
+  DEFAULT_BETA,
+  DEFAULT_P_BASE,
+  decodeConfig,
+  encodeConfig,
+  type St,
+} from "@/lib/pra-config";
 import {
   REFERENCE_BARRIERS,
   computePRA,
@@ -96,12 +103,53 @@ function initialState() {
 
 /* -------------------------------------------------------------------------- */
 
-type St = Record<string, { v: number; on: boolean; redundancy: number }>;
+const VALID_IDS = new Set(SEEDS.map((s) => s.id));
 
 export function PRAWorkbench() {
-  const [state, setState] = useState<St>(initialState);
-  const [pBase, setPBase] = useState(0.6);
-  const [beta, setBeta] = useState(0.12);
+  const boot = useMemo(() => {
+    if (typeof window === "undefined") {
+      return { pBase: DEFAULT_P_BASE, beta: DEFAULT_BETA, state: initialState() };
+    }
+    const validIds = new Set(SEEDS.map((s) => s.id));
+    const decoded = decodeConfig(window.location.hash, validIds);
+    if (!decoded) {
+      return { pBase: DEFAULT_P_BASE, beta: DEFAULT_BETA, state: initialState() };
+    }
+    // A link only carries deviations, so it must be layered over the defaults
+    // rather than replacing them.
+    return {
+      pBase: decoded.pBase,
+      beta: decoded.beta,
+      state: { ...initialState(), ...decoded.state },
+    };
+  }, []);
+  const [state, setState] = useState<St>(boot.state);
+  const [pBase, setPBase] = useState(boot.pBase);
+  const [beta, setBeta] = useState(boot.beta);
+  const [shared, setShared] = useState(false);
+
+  // Keep the address bar in sync so the current configuration is always
+  // shareable and survives a reload. replaceState, not pushState — every slider
+  // tick would otherwise be a new history entry.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const encoded = encodeConfig(state, pBase, beta, initialState());
+    const url = `${window.location.pathname}${window.location.search}${
+      encoded ? `#${encoded}` : ""
+    }`;
+    window.history.replaceState(null, "", url);
+  }, [state, pBase, beta]);
+
+  const copyLink = async () => {
+    if (typeof window === "undefined") return;
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShared(true);
+      window.setTimeout(() => setShared(false), 1600);
+    } catch {
+      setShared(false);
+    }
+  };
 
   const barriers = useMemo(() => buildBarriers(state), [state]);
   const result = useMemo<PAResult>(
@@ -162,6 +210,13 @@ export function PRAWorkbench() {
                   {l}
                 </button>
               ))}
+              <button
+                onClick={copyLink}
+                title="Copy a link that restores this exact configuration"
+                className="border border-rule-2 px-2 py-1 text-[0.6875rem] text-fg-3 transition-colors hover:border-fg-4 hover:text-fg"
+              >
+                {shared ? "Link copied ✓" : "Copy link"}
+              </button>
             </div>
           </div>
 

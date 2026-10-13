@@ -13,8 +13,8 @@ assessment engine adapted from nuclear and aerospace practice.
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white)](next.config.ts)
 [![Bun](https://img.shields.io/badge/Bun-1.3-000000?style=for-the-badge&logo=bun&logoColor=white)](package.json)
 [![License](https://img.shields.io/badge/License-MIT-fafafa?style=for-the-badge)](LICENSE)
-[![CI](https://img.shields.io/badge/CI-lint%20%2B%20typecheck%20%2B%20479%20tests-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-47%20%2B%20432%20passing-3ddc97?style=for-the-badge)](#verification)
+[![CI](https://img.shields.io/badge/CI-lint%20%2B%20typecheck%20%2B%20504%20tests-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-72%20%2B%20432%20passing-3ddc97?style=for-the-badge)](#verification)
 
 *Built by [Aniruddha Adak](https://github.com/aniruddhaadak80) · Kolkata, India*
 
@@ -35,7 +35,8 @@ assessment engine adapted from nuclear and aerospace practice.
 | **[The method atlas](#the-method-atlas)** | All 59 methods, layer by layer |
 | **[Seven routes](#whats-inside--seven-routes)** | Every page in the app |
 | **[Sourced evidence](#sourced-evidence)** | The 4-tier provenance ladder + bibliography |
-| **[Verification](#verification)** | 47 math assertions · 432 data checks |
+| **[Verification](#verification)** | 72 engine + codec assertions · 432 data checks |
+| **[Measured payload](#measured-payload)** | What actually crosses the wire |
 | **[Common misconceptions](#common-misconceptions)** | The five errors this model exists to avoid |
 | **[Tech stack](#tech-stack)** | Next.js 16, React 19, Tailwind v4, Bun |
 | **[Design system](#design-system)** | The instrument-panel aesthetic |
@@ -363,6 +364,23 @@ engine carries β as a first-class parameter rather than a footnote.
 | 🎯 **Importance ranking** | Birnbaum, Fussell–Vesely, RAW and RRW bar charts over the deployed barriers, with the weakest link flagged |
 | 🔬 **Sensitivity band** | Each control's estimate swept across its plausible low–high range, showing where the final answer actually moves — i.e. where to spend the measurement budget |
 
+Every configuration in the workbench is also **shareable as a URL**. The
+address bar always reflects the current state, so any argument of the form
+"this stack is stronger than that one" can be sent to someone and they will
+see exactly the same model on load. Only the *deviations* from the default
+stack are encoded, which keeps links short and stable:
+
+```
+/risk#p=600&b=120&d=sandboxing.700.0.2,corrigibility.420.1.1
+      ^    ^        ^ per control: id · v(permille) · on · redundancy
+      |    β
+      P(capability event)
+```
+
+Malformed links are rejected wholesale — a bad URL restores the default stack
+rather than half-applying a configuration. The codec and its rejection rules
+are covered by tests, not by inspection.
+
 ---
 
 ## The method atlas
@@ -631,7 +649,7 @@ tiers are shown on the methodology page and inline throughout:
 
 AEGIS ships two test suites. Both run in CI on every push and PR.
 
-### 47 numerical assertions — `scripts/verify-pra.ts`
+### 72 engine + codec assertions — `scripts/verify-pra.ts`
 
 Every formula in `src/lib/pra.ts` is checked against a hand-computed value:
 
@@ -652,6 +670,10 @@ Every formula in `src/lib/pra.ts` is checked against a hand-computed value:
 The invariants that matter are **asserted rather than assumed** — in particular
 that adding a barrier can never increase risk, which is the whole claim of
 defence in depth.
+
+The suite also covers the URL-state codec in `src/lib/pra-config.ts`: values
+must survive a round-trip exactly, only deviations from the defaults may be
+encoded, and malformed links must be rejected wholesale rather than half-applied.
 
 ### 432 data-integrity checks — `scripts/verify-data.ts`
 
@@ -687,7 +709,7 @@ catalog that had shipped:
 All were repaired and the suite now guards against regressions.
 
 ```bash
-bun run test      # 47 + 432 checks
+bun run test      # 72 + 432 checks
 ```
 
 ---
@@ -794,6 +816,31 @@ The whole site is a **fully static export** (`output: 'export'`). There is no
 server, no client-side math library, and no data fetching at runtime — the
 entire model runs in the browser.
 
+### Measured payload
+
+Raw HTML sizes are inflated by the inlined RSC payload, so the honest number is
+what actually crosses the wire. Measured on the production build:
+
+| Asset | Raw | Gzipped |
+|:--|--:|--:|
+| `/` briefing | 180 KB | **32 KB** |
+| `/atlas` | 126 KB | **16 KB** |
+| `/risk` | 231 KB | **28 KB** |
+| `/math` | 968 KB | **62 KB** |
+| `/stack` | 1394 KB | **119 KB** |
+| Largest JS chunk | 552 KB | 138 KB |
+| All JS + CSS | ~1.4 MB | ~400 KB |
+| Images (screenshots, OG, icons) | 2 MB | 2 MB |
+
+`/stack` is the outlier: it inlines all 59 full method records — summaries,
+mechanisms, failure modes, evidence, and LaTeX — into the RSC payload, because
+that page renders every record in full. `/atlas` stays at 16 KB because it
+renders a summary list and expands detail on demand.
+
+The practical consequence: first paint on `/` is a 32 KB document plus a
+handful of chunks. If `/stack` ever matters, the fix is to lazy-load the
+detail view the way `/atlas` already does — not to trim the data.
+
 ```mermaid
 flowchart LR
     subgraph DATA["src/data — the model, as data"]
@@ -859,7 +906,7 @@ aegis/
 │   ├── screenshots/                # README imagery (7 pages)
 │   └── *.svg
 ├── scripts/
-│   ├── verify-pra.ts               # 47 numerical assertions on the engine
+│   ├── verify-pra.ts               # 72 engine + codec assertions
 │   └── verify-data.ts              # 432 catalog integrity checks
 ├── src/
 │   ├── app/
@@ -888,7 +935,8 @@ aegis/
 │   │   ├── layers.ts               # taxonomy + colour ramps
 │   │   └── evidence.ts             # measured / survey / forecast anchors
 │   └── lib/
-│       └── pra.ts                  # two-stage PRA mathematics
+│       ├── pra.ts                  # two-stage PRA mathematics
+│       └── pra-config.ts           # shareable URL state codec
 ├── next.config.ts                  # output: 'export'
 ├── LICENSE                         # MIT
 ├── tailwind.config.ts
@@ -923,7 +971,7 @@ bun run build          # emits ./out
 | `bun run build` | Production build; static site in `./out` |
 | `bun run start` | Serve the built app |
 | `bun run lint` | ESLint via `eslint-config-next` |
-| `bun run test` | **47** PRA math assertions **+ 432** catalog integrity checks |
+| `bun run test` | **72** engine + codec assertions **+ 432** catalog integrity checks |
 
 See the [Verification](#verification) section for what each suite asserts.
 
