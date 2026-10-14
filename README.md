@@ -38,6 +38,7 @@ assessment engine adapted from nuclear and aerospace practice.
 | **[Verification](#verification)** | 72 engine + codec assertions · 432 data checks |
 | **[Measured payload](#measured-payload)** | What actually crosses the wire |
 | **[Common misconceptions](#common-misconceptions)** | The five errors this model exists to avoid |
+| **[Glossary](#glossary)** | Every term, defined as this project uses it |
 | **[Tech stack](#tech-stack)** | Next.js 16, React 19, Tailwind v4, Bun |
 | **[Design system](#design-system)** | The instrument-panel aesthetic |
 | **[Project structure](#project-structure)** | Where everything lives |
@@ -800,7 +801,89 @@ or `survey` and kept distinct. The labels are the point.
 
 ---
 
-## Tech stack
+## Glossary
+
+The domain has its own vocabulary, and a term used loosely is a term that will
+be misunderstood. Definitions as this project uses them.
+
+### The risk model
+
+| Term | Meaning |
+|:--|:--|
+| **PRA** | Probabilistic Risk Assessment — the practice of composing the probability of an unwanted outcome from the probabilities of its causes. Borrowed from nuclear, aerospace and process safety (IEC 61508, ISO 26262, MIL-STD-217). |
+| **Fault tree** | A top-down model: the unwanted outcome at the top, the combinations of events that cause it below. AEGIS uses a **two-stage** tree. |
+| **Initiation control** | A control that changes *how likely* a dangerous capability is to arise. Acts at Stage 1. Specification, training, interpretability controls. |
+| **Runtime barrier** | A control that must *stop* an event that has arisen. Acts at Stage 2. Containment, verification, governance, recovery controls. |
+| **$q$** | Unavailability — the probability a barrier fails to stop the event. Lower is better. |
+| **$e$** | Efficacy — the probability an initiation control prevents the event arising. Higher is better. |
+| **$P_{\text{base}}$** | The probability of a dangerous capability event in the absence of any specification/training/interpretability work. Deliberately user-set; no published estimate exists. |
+| **Defence in depth** | Stacking independent barriers so that catastrophe requires *all* of them to fail. Its defining property: adding a barrier with $q<1$ multiplies the escape probability down. |
+| **β factor** | The fraction of failures in a group of similar barriers that share a single cause. Sets the floor that no amount of redundancy can cross. |
+| **Common-cause failure** | A single defect propagating through multiple barriers at once. |
+| **Swiss-cheese model** | Barriers drawn as slices with holes; catastrophe requires a hole through every slice. The β term is a hole drilled through *all* slices at once. |
+
+### Importance measures
+
+All four rank the deployed runtime barriers. They answer different questions
+and can disagree — which is why the app shows all four.
+
+| Measure | Answers |
+|:--|:--|
+| **Birnbaum** | How much does the escape probability move if this barrier's $q$ moves a little? |
+| **Fussell–Vesely** | What share of the escapes did this barrier alone prevent? |
+| **RAW** (Risk Achievement Worth) | How many times worse is the deployment if this barrier *can* fail, versus if it were perfect? |
+| **RRW** (Risk Reduction Worth) | What fraction of the escape probability does this barrier remove? |
+
+### The seven layers
+
+| Layer | One-line definition |
+|:--|:--|
+| **Specification** | Getting the objective right — defining what "good" means. |
+| **Training** | Shaping behaviour into the weights. |
+| **Interpretability** | Reading the mechanism, not the output. |
+| **Containment** | Bounding what the system can reach. |
+| **Verification** | Proof instead of plausibility. |
+| **Governance** | Rules that outlive any single lab. |
+| **Recovery** | Surviving the failure you did not prevent. |
+
+### Controls and techniques
+
+| Term | Meaning |
+|:--|:--|
+| **RLHF / RLAIF** | Preference optimisation from human labels / from model-generated labels filtered by a constitution. |
+| **DPO** | Direct Preference Optimisation — no separate reward model. |
+| **CIRL** | Cooperative Inverse RL — inferring the human's actual reward, not the observed policy. |
+| **Weak-to-strong** | Using a strong model to supervise a stronger one. |
+| **Scalable oversight** | Judging tasks we cannot ourselves evaluate. |
+| **Iterated amplification** | Bootstrapping oversight by decomposing hard tasks into easier ones. |
+| **Sleeper agents** | Backdoors that survive safety training. |
+| **Alignment faking** | A model that behaves differently when it believes it is being observed. |
+| **Refusal sandbagging** | Selectively withholding capability to steer deployment decisions. |
+| **Sparse autoencoders** | Decomposing activations into monosemantic features. |
+| **Monosemanticity** | The goal of one feature = one interpretable concept. |
+| **Activation patching** | Causally intervening on internal states. |
+| **Red teaming / adversarial training** | Finding attacks before release / training against the attacks you found. |
+| **Machine unlearning** | Removing knowledge post-hoc. |
+| **Corrigibility** | Permitting correction rather than resisting it. |
+| **Safe interruptibility** | Shutting down without triggering avoidance. |
+| **The off-switch game** | Formalising the incentives around interruption. |
+| **Safety case** | A structured, reviewable argument for deployment safety — an argument, not a test result. |
+| **TRL** | Technology Readiness Level, 1–9. |
+
+### Frameworks and sources
+
+| Term | Meaning |
+|:--|:--|
+| **RSP** | Responsible Scaling Policy — Anthropic's capability thresholds tied to safeguards, modelled on biosafety levels. |
+| **FSF** | Frontier Safety Framework — DeepMind's Critical Capability Levels. |
+| **Preparedness Framework** | OpenAI's tracked-category risk thresholds. |
+| **EU AI Act** | The first binding legal instrument on AI; GPAI obligations attach above a compute threshold. |
+| **ESPAI** | 2023 Expert Survey on Progress in AI (AI Impacts) — aggregated expert opinion. |
+| **METR** | Measuring AI Ability to Complete Long Tasks — the 50% task-horizon doubling series. |
+| **Epoch** | Compute-trend and notable-models dataset. |
+| **Provenance tier** | The label on every number: `measured`, `survey`, `forecast`, or `estimate`. |
+
+---
 
 | Layer | Choice | Version |
 |:--|:--|:--|
@@ -1052,6 +1135,9 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 [Source](https://github.com/aniruddhaadak80/aegis) ·
 [Issues](https://github.com/aniruddhaadak80/aegis/issues) ·
 [Changelog](CHANGELOG.md) ·
+[Contributing](.github/CONTRIBUTING.md) ·
+[Security](SECURITY.md) ·
+[Code of Conduct](CODE_OF_CONDUCT.md) ·
 [License](LICENSE)
 
 *Built with the OpenCode agent system. Thanks to the open-source AI safety

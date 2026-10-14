@@ -1,0 +1,19 @@
+# Code owners for AEGIS
+#
+# These owners are requested for review on every pull request that touches
+# their paths. They are also the people to contact privately for security
+# reports (see SECURITY.md).
+
+# Default owner for everything in the repository
+* @aniruddhaadak80
+
+# The PRA mathematics is the heart of the project. Changes here must be
+# accompanied by updates to scripts/verify-pra.ts.
+/src/lib/pra.ts @aniruddhaadak80
+/src/lib/pra-config.ts @aniruddhaadak80
+/scripts/verify-pra.ts @aniruddhaadak80
+
+# The method catalog is data, not code. Changes here must be accompanied by
+# updates to scripts/verify-data.ts.
+/src/data/ @aniruddhaadak80
+/scripts/verify-data.ts @aniruddhaadak80
