@@ -36,8 +36,8 @@ assessment engine adapted from nuclear and aerospace practice.
 | **[Seven routes](#whats-inside--seven-routes)** | Every page in the app |
 | **[Sourced evidence](#sourced-evidence)** | The 4-tier provenance ladder + bibliography |
 | **[Verification](#verification)** | 72 engine + codec assertions · 432 data checks |
-| **[Measured payload](#measured-payload)** | What actually crosses the wire |
 | **[Common misconceptions](#common-misconceptions)** | The five errors this model exists to avoid |
+| **[Documentation](#documentation)** | Engineering reference docs |
 | **[Glossary](#glossary)** | Every term, defined as this project uses it |
 | **[Tech stack](#tech-stack)** | Next.js 16, React 19, Tailwind v4, Bun |
 | **[Design system](#design-system)** | The instrument-panel aesthetic |
@@ -801,7 +801,17 @@ or `survey` and kept distinct. The labels are the point.
 
 ---
 
-## Glossary
+## Documentation
+
+The README is the onboarding document. For the engineering reference:
+
+| Document | Contents |
+|:--|:--|
+| [`docs/MODEL.md`](docs/MODEL.md) | The two-stage fault tree, the β common-cause floor, the four importance measures, the LOO efficiency ranking, the empty-stack invariant |
+| [`docs/DATA.md`](docs/DATA.md) | The method schema, the invariants the suite enforces, the four provenance tiers, dependency edges and correlated failure, the open questions |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | The static-export constraint and its consequences, the layer map, the design system, why the tests are split in two, measured performance |
+
+---
 
 The domain has its own vocabulary, and a term used loosely is a term that will
 be misunderstood. Definitions as this project uses them.
