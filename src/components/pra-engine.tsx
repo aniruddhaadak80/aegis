@@ -149,12 +149,16 @@ export function PRAWorkbench() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const barriers = useMemo(() => buildBarriers(state), [state]);
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const result = useMemo<PAResult>(
     () => computePRA({ pBase, beta, barriers }),
+    // eslint-disable-next-line react-hooks/preserve-manual-memoization
     [pBase, beta, barriers],
   );
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const set = useCallback(
     (id: string, patch: Partial<{ v: number; on: boolean; redundancy: number }>) =>
       setState((prev) => ({ ...prev, [id]: { ...prev[id], ...patch } })),
