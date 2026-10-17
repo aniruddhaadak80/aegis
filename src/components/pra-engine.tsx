@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { LAYER_MAP, type LayerId } from "@/data/layers";
 import { METHODS } from "@/data/methods";
 import {
@@ -103,8 +103,6 @@ function initialState() {
 
 /* -------------------------------------------------------------------------- */
 
-const VALID_IDS = new Set(SEEDS.map((s) => s.id));
-
 export function PRAWorkbench() {
   const boot = useMemo(() => {
     if (typeof window === "undefined") {
@@ -157,8 +155,11 @@ export function PRAWorkbench() {
     [pBase, beta, barriers],
   );
 
-  const set = (id: string, patch: Partial<{ v: number; on: boolean; redundancy: number }>) =>
-    setState((prev) => ({ ...prev, [id]: { ...prev[id], ...patch } }));
+  const set = useCallback(
+    (id: string, patch: Partial<{ v: number; on: boolean; redundancy: number }>) =>
+      setState((prev) => ({ ...prev, [id]: { ...prev[id], ...patch } })),
+    [],
+  );
 
   const applyPreset = (name: "baseline" | "everything" | "barriers-only" | "none") => {
     const base = initialState();
