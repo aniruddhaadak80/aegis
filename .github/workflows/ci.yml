@@ -79,6 +79,7 @@ jobs:
           path: out/
 
       - name: Deploy to Vercel Preview
+        if: ${{ secrets.VERCEL_TOKEN != '' }}
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -100,6 +101,7 @@ jobs:
           path: out/
 
       - name: Deploy to Vercel Production
+        if: ${{ secrets.VERCEL_TOKEN != '' }}
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
