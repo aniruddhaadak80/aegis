@@ -87,6 +87,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: github.event_name == 'pull_request'
+    # `secrets` is not an allowed context in steps.<id>.if (only in
+    # jobs.<job_id>.env), so a gate written that way invalidates the whole
+    # workflow file: every run fails validation in 0s before any job starts.
+    # Export the credentials here (secrets is allowed in env) and gate the
+    # step on env instead — with no Vercel secrets configured the step skips
+    # instead of the action dying on a missing `vercel-token` input.
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -95,6 +105,7 @@ jobs:
           path: out/
 
       - name: Deploy to Vercel Preview
+        if: env.VERCEL_TOKEN != '' && env.VERCEL_ORG_ID != '' && env.VERCEL_PROJECT_ID != ''
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -108,6 +119,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Same env-gate as deploy-preview (see there for why secrets cannot be
+    # read in a step-level `if`).
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -116,6 +133,7 @@ jobs:
           path: out/
 
       - name: Deploy to Vercel Production
+        if: env.VERCEL_TOKEN != '' && env.VERCEL_ORG_ID != '' && env.VERCEL_PROJECT_ID != ''
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
