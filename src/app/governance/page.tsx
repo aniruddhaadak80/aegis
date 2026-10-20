@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Governance — The Record",
   description:
     "The safety-framework and policy timeline from Bletchley to 2026, plus an honest assessment of what each commitment is worth and who it binds.",
+  alternates: { canonical: "/governance" },
 };
 
 const FRAMEWORKS = [

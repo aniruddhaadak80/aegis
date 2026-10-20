@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { LAYERS } from "@/data/layers";
 import { METHODS } from "@/data/methods";
 import {
@@ -10,6 +11,10 @@ import {
 import { HazardChart } from "@/components/hazard-chart";
 import { Reveal } from "@/components/reveal";
 import { Cite, KindBadge, Panel, SectionHead } from "@/components/ui";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   return (

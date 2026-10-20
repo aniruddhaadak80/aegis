@@ -100,7 +100,6 @@ export const metadata: Metadata = {
   authors: [{ name: "Aniruddha Adak", url: "https://github.com/aniruddhaadak80" }],
   creator: "Aniruddha Adak",
   publisher: "Aniruddha Adak",
-  alternates: { canonical: "/" },
   openGraph: {
     title: "AEGIS — The Superintelligence Control Stack",
     description:
