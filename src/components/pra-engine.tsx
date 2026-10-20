@@ -64,22 +64,27 @@ function buildBarriers(
     const method = METHODS.find((m) => m.id === s.id);
     const def = method ? method.efficacy / 100 : 0.4;
     const st = state[s.id];
+    // Initiators sweep in efficacy space (e); runtime barriers sweep in
+    // unavailability space (q = 1 − e). `qLow`/`qHigh` are the plausible
+    // range of the control's estimate in the space its `q` is drawn from.
+    const eLow = method ? method.efficacyLow / 100 : 0.2;
+    const eHigh = method ? method.efficacyHigh / 100 : 0.6;
+    const isInitiator =
+      s.layer === "specification" ||
+      s.layer === "training" ||
+      s.layer === "interpretability";
     return {
       id: s.id,
       name: s.name,
       layer: s.layer,
       hex: layer.hex,
-      stage: (s.layer === "specification" ||
-        s.layer === "training" ||
-        s.layer === "interpretability"
-        ? "initiator"
-        : "barrier") as Barrier["stage"],
+      stage: (isInitiator ? "initiator" : "barrier") as Barrier["stage"],
       // For initiators, the slider value is efficacy e; for barriers it is
       // unavailability q. Both are "the good number", 0–1.
       q: st?.v ?? 1 - def,
       e: st?.v ?? def,
-      qLow: method ? method.efficacyHigh / 100 : 0.2,
-      qHigh: method ? method.efficacyLow / 100 : 0.6,
+      qLow: isInitiator ? eLow : 1 - eHigh,
+      qHigh: isInitiator ? eHigh : 1 - eLow,
       cost: 3,
       on: st?.on ?? s.on,
       redundancy: st?.redundancy ?? s.redundancy,

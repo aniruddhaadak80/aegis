@@ -363,7 +363,6 @@ engine carries β as a first-class parameter rather than a footnote.
 | 📉 **Cost-effectiveness frontier** | Marginal risk reduction per unit cost, so weak-but-cheap controls can be compared against strong-but-expensive ones on one axis |
 | 📈 **Hazard curve** | Exponential capability growth (METR task-horizon doubling, Epoch compute doubling, algorithmic progress) against linear governance iteration — the race, drawn |
 | 🎯 **Importance ranking** | Birnbaum, Fussell–Vesely, RAW and RRW bar charts over the deployed barriers, with the weakest link flagged |
-| 🔬 **Sensitivity band** | Each control's estimate swept across its plausible low–high range, showing where the final answer actually moves — i.e. where to spend the measurement budget |
 
 Every configuration in the workbench is also **shareable as a URL**. The
 address bar always reflects the current state, so any argument of the form
