@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "PRA Engine — Defence in Depth, Quantified",
   description:
     "A live probabilistic risk assessment for an AI safety case. Model barrier unavailability, common-cause failure, redundancy, and marginal risk reduction per unit cost using the mathematics of IEC 61508 and nuclear PRA.",
+  alternates: { canonical: "/risk" },
 };
 
 /*

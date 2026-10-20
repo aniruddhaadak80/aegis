@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Atlas — Every Control Technique",
   description:
     "Forty-one AI control techniques across seven layers, with citations, formulae, measured results, failure modes, maturity, cost, and dependency edges. Filterable and sortable.",
+  alternates: { canonical: "/atlas" },
 };
 
 export default function AtlasPage() {

@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "The Stack — Seven Layers of Control",
   description:
     "Specification, training, interpretability, containment, verification, governance, and recovery. Every control technique in the literature, placed by where in the lifecycle it acts.",
+  alternates: { canonical: "/stack" },
 };
 
 export default function StackPage() {

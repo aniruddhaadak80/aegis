@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Methodology — How These Numbers Were Made",
   description:
     "The provenance rules behind every figure in AEGIS: what is measured, what is surveyed, what is forecast, and what is an editorial estimate — and exactly how the estimates were produced.",
+  alternates: { canonical: "/methodology" },
 };
 
 export default function MethodologyPage() {

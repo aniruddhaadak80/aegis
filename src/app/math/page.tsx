@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "The Mathematics",
   description:
     "The complete formula library of AEGIS — probability, PRA, and alignment research — with rendered LaTeX, plain-language readings, and the consequence of each.",
+  alternates: { canonical: "/math" },
 };
 
 const CORE = [
