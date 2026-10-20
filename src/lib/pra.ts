@@ -386,30 +386,6 @@ export function pct(p: number, digits = 1): string {
 }
 
 /**
- * Sensitivity: how much the final answer moves as one control's estimate
- * moves across its plausible range. A control with a wide swing is where you
- * should spend your measurement budget.
- */
-export function sensitivity(
-  barriers: Barrier[],
-  id: string,
-  pBase: number,
-  beta: number,
-): { low: number; base: number; high: number } {
-  const target = barriers.find((b) => b.id === id);
-  if (!target) return { low: 0, base: 0, high: 0 };
-
-  const run = (v: number) =>
-    computePRA({
-      pBase,
-      beta,
-      barriers: barriers.map((b) => (b.id === id ? { ...b, q: v, e: v } : b)),
-    }).pCatastrophe;
-
-  return { low: run(target.qLow), base: run(target.q), high: run(target.qHigh) };
-}
-
-/**
  * Reference point: what unavailability does established high-assurance
  * engineering actually achieve? Used for scale, not for comparison of merit.
  */
