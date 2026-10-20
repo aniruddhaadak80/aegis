@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "bunx serve out",
     "lint": "eslint",
     "test": "bun run scripts/verify-pra.ts && bun run scripts/verify-data.ts"
   },

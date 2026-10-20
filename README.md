@@ -1062,7 +1062,7 @@ bun run build          # emits ./out
 |:--|:--|
 | `bun run dev` | Development server on `:3000` |
 | `bun run build` | Production build; static site in `./out` |
-| `bun run start` | Serve the built app |
+| `bun run start` | Serve the built app (`bunx serve out` — `next start` is incompatible with `output: 'export'`) |
 | `bun run lint` | ESLint via `eslint-config-next` |
 | `bun run test` | **72** engine + codec assertions **+ 432** catalog integrity checks |
 
