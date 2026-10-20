@@ -461,7 +461,7 @@ export function PRAWorkbench() {
       <div className="mt-5 grid gap-5 lg:grid-cols-2">
         <PRAAnalysis result={result} barriers={barriers} />
         <div className="space-y-5">
-          <SwissCheese result={result} />
+          <SwissCheese result={result} barriers={barriers} />
           <ReferenceScale />
         </div>
       </div>
@@ -572,29 +572,21 @@ function Slider({
 /*  Swiss cheese                                                               */
 /* -------------------------------------------------------------------------- */
 
-function SwissCheese({ result }: { result: PAResult }) {
-  const barriers = SEEDS.map((s) => {
-    const m = METHODS.find((x) => x.id === s.id);
-    const layer = LAYER_MAP[s.layer];
-    const isInit =
-      s.layer === "specification" ||
-      s.layer === "training" ||
-      s.layer === "interpretability";
-    const eff = (m?.efficacy ?? 40) / 100;
-    return {
-      id: s.id,
-      name: s.name,
-      hex: layer.hex,
-      q: isInit ? 1 - eff : eff,
-      on: s.on,
-      isInit,
-    };
-  }).filter((b) => b.on && !b.isInit);
+function SwissCheese({
+  result,
+  barriers,
+}: {
+  result: PAResult;
+  barriers: Barrier[];
+}) {
+  // Live workbench state: same sense as the P(escape) figure above — runtime
+  // barriers only, using each barrier's current `q` for its hole size.
+  const slices = barriers.filter((b) => b.on && b.stage === "barrier");
 
   const W = 340;
   const rowH = 16;
   const gap = 3;
-  const H = Math.max(1, barriers.length) * (rowH + gap);
+  const H = Math.max(1, slices.length) * (rowH + gap);
 
   const hash = (s: string) => {
     let h = 2166136261;
@@ -626,7 +618,7 @@ function SwissCheese({ result }: { result: PAResult }) {
         role="img"
         aria-label="Each deployed runtime barrier is a slice; hole area is its failure probability; the trajectory threads a hole in every slice"
       >
-        {barriers.map((b, i) => {
+        {slices.map((b, i) => {
           const y = i * (rowH + gap);
           const rnd = hash(b.id);
           return (
@@ -653,7 +645,7 @@ function SwissCheese({ result }: { result: PAResult }) {
             </g>
           );
         })}
-        {barriers.length > 0 ? (
+        {slices.length > 0 ? (
           <path
             d={`M0,${H * 0.5} C ${W * 0.3},${H * 0.5 - H * 0.34} ${W * 0.6},${
               H * 0.5 + H * 0.3
